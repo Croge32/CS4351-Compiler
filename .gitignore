@@ -1,0 +1,9 @@
+# Ignore environment files
+.env
+CS4351/
+CS4351/*
+
+# Ignore prog1 generated files
+*.class
+*.tig
+Yylex.java
