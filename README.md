@@ -13,10 +13,10 @@ source .env
 cd prog1/ (or whichever prog is being examined)
 source .profile
 ````
-4. Make and run the project using:
+Make and run the project using:
 ````bash
 make
 java Parse.Main test.tig
 ````
 
-
+Special thanks to Jonathan Hooper (jmhooper) for the setup files necessary to easily compile the project locally.
