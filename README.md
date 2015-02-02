@@ -19,4 +19,4 @@ make
 java Parse.Main test.tig
 ````
 
-
+Special thanks to Jonathan Hooper (jmhooper) for the setup files necessary to easily compile the project locally.
