@@ -49,11 +49,11 @@ private String string = "";
 
 %state COMMENT
 %state STRING
-%state ESCAPEDSTRING
+%state IGNORE
 
 %%
 <YYINITIAL> " "	{}
-<YYINITIAL>\n	{newline();}
+<YYINITIAL> \n	{newline();}
 
 <YYINITIAL> "/*" {yybegin(COMMENT);}
 <COMMENT> "/*" { nested++; yybegin(COMMENT); }
@@ -107,5 +107,20 @@ private String string = "";
 <YYINITIAL> "." {return tok{sym.DOT, null);}
 <YYINITIAL> "&" {return tok{sym.AND, null);}
 <YYINITIAL> "|" {return tok{sym.OR, null);}
+
+<YYINITIAL> "\"" {yybegin(STRING);}
+<STRING> [a-zA-Z0-9_\s] {string = string + yytext();}
+<STRING> "\n" {}
+<STRING> "\t" {}
+<STRING> "\^c" {} // if (ch >= '@'' && ch <= '_') ch = ch - '@' 
+<STRING> "\ddd" {}
+<STRING> "\\"" {}
+<STRING> "\\\" {}
+
+<STRING> "\\f...f\\" {yybegin(IGNORE);}
+<IGNORE> {}
+
+<STRING> "\"" {return tok(sym.STRING, string);}
+
 
 . { err("Illegal character: " + yytext()); }
