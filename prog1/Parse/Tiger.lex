@@ -110,15 +110,16 @@ private String string = "";
 
 <YYINITIAL> "\"" {yybegin(STRING);}
 <STRING> [a-zA-Z0-9_\s] {string = string + yytext();}
-<STRING> "\n" {}
-<STRING> "\t" {}
+<STRING> "\n" { string += "\n"; }
+<STRING> "\t" { string += "\t"; }
 <STRING> "\^c" {} // if (ch >= '@'' && ch <= '_') ch = ch - '@' 
-<STRING> "\ddd" {}
-<STRING> "\\"" {}
-<STRING> "\\\" {}
+<STRING> "\ddd" { string += "\\" + yytext(); }
+<STRING> "\\"" { string += "\""; }
+<STRING> "\\\" { string += "\\"; }
 
-<STRING> "\\f...f\\" {yybegin(IGNORE);}
-<IGNORE> {}
+<STRING> "\\" {yybegin(IGNORE);}
+<IGNORE> . {}
+<IGNORE> "\\" {yybegin(YYINTIAL);}
 
 <STRING> "\"" {return tok(sym.STRING, string);}
 
