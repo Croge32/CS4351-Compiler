@@ -112,16 +112,18 @@ private String string = "";
 <STRING> [a-zA-Z0-9_\s] {string = string + yytext();}
 <STRING> "\n" { string += "\n"; }
 <STRING> "\t" { string += "\t"; }
-<STRING> "\^c" {} // if (ch >= '@'' && ch <= '_') ch = ch - '@' 
+
+<STRING> "\^c" {}
+/* if (ch >= '@'' && ch <= '_') ch = ch - '@'  Maybe this will help ^^^ */
+
 <STRING> "\ddd" { string += "\\" + yytext(); }
 <STRING> "\\"" { string += "\""; }
 <STRING> "\\\" { string += "\\"; }
 
 <STRING> "\\" {yybegin(IGNORE);}
-<IGNORE> . {}
+<IGNORE> [\f|\s|\n|\t]+ {}
 <IGNORE> "\\" {yybegin(YYINTIAL);}
 
 <STRING> "\"" {return tok(sym.STRING, string);}
-
 
 . { err("Illegal character: " + yytext()); }
