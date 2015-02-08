@@ -31,13 +31,14 @@ private java_cup.runtime.Symbol tok(int kind, Object value) {
 
 private ErrorMsg errorMsg;
 
+private int nested = 0;
+private String string;
+private char ch;
+
 Yylex(java.io.InputStream s, ErrorMsg e) {
   this(s);
   errorMsg=e;
 }
-
-private int nested = 0;
-private String string = "";
 
 %}
 
@@ -63,67 +64,98 @@ private String string = "";
 }
 <COMMENT> . {}
 
-<YYINITIAL> "function" {return tok{sym.FUNCTION, null);}
-<YYINITIAL> "else" {return tok{sym.ELSE, null);}
-<YYINITIAL> "nil" {return tok{sym.NIL, null);}
-<YYINITIAL> "do" {return tok{sym.DO, null);}
-<YYINITIAL> "of" {return tok{sym.OF, null);}
-<YYINITIAL> "array" {return tok{sym.ARRAY, null);}
-<YYINITIAL> "type" {return tok{sym.TYPE, null);}
-<YYINITIAL> "for" {return tok{sym.FOR, null);}
-<YYINITIAL> "to" {return tok{sym.TO, null);}
-<YYINITIAL> "in" {return tok{sym.IN, null);}
-<YYINITIAL> "end" {return tok{sym.END, null);}
-<YYINITIAL> "if" {return tok{sym.IF, null);}
-<YYINITIAL> "while" {return tok{sym.WHILE, null);}
-<YYINITIAL> "var" {return tok{sym.VAR, null);}
-<YYINITIAL> "break" {return tok{sym.BREAK, null);}
-<YYINITIAL> "let" {return tok{sym.LET, null);}
-<YYINITIAL> "then" {return tok{sym.THEN, null);}
+<YYINITIAL> "function" {return tok(sym.FUNCTION);}
+<YYINITIAL> "else" {return tok(sym.ELSE);}
+<YYINITIAL> "nil" {return tok(sym.NIL);}
+<YYINITIAL> "do" {return tok(sym.DO);}
+<YYINITIAL> "of" {return tok(sym.OF);}
+<YYINITIAL> "array" {return tok(sym.ARRAY);}
+<YYINITIAL> "type" {return tok(sym.TYPE);}
+<YYINITIAL> "for" {return tok(sym.FOR);}
+<YYINITIAL> "to" {return tok(sym.TO);}
+<YYINITIAL> "in" {return tok(sym.IN);}
+<YYINITIAL> "end" {return tok(sym.END);}
+<YYINITIAL> "if" {return tok(sym.IF);}
+<YYINITIAL> "while" {return tok(sym.WHILE);}
+<YYINITIAL> "var" {return tok(sym.VAR);}
+<YYINITIAL> "break" {return tok(sym.BREAK);}
+<YYINITIAL> "let" {return tok(sym.LET);}
+<YYINITIAL> "then" {return tok(sym.THEN);}
 
-<YYINITIAL> [0-9]+ {return tok{sym.INT, null);}
-<YYINITIAL> [a-zA-Z][a-zA-Z0-9_]* {return tok{sym.ID, null);}
+<YYINITIAL> [0-9]+ {return tok(sym.INT, new Integer(yytext()));}
+<YYINITIAL> [a-zA-Z][a-zA-Z0-9_]* {return tok(sym.ID, yytext());}
 
 <YYINITIAL> ","	{return tok(sym.COMMA, null);}
-<YYINITIAL> ":" {return tok{sym.COLON, null);}
-<YYINITIAL> "<>" {return tok{sym.NEQ, null);}
-<YYINITIAL> ">" {return tok{sym.GT, null);}
-<YYINITIAL> "<" {return tok{sym.LT, null);}
-<YYINITIAL> ">=" {return tok{sym.GE, null);}
-<YYINITIAL> "<=" {return tok{sym.LE, null);}
-<YYINITIAL> "=" {return tok{sym.EQ, null);}
-<YYINITIAL> ":=" {return tok{sym.ASSIGN, null);}
-<YYINITIAL> "/" {return tok{sym.DIVIDE, null);}
-<YYINITIAL> "-" {return tok{sym.MINUS, null);}
-<YYINITIAL> "*" {return tok{sym.TIMES, null);}
-<YYINITIAL> "+" {return tok{sym.PLUS, null);}
-<YYINITIAL> ";" {return tok{sym.SEMICOLON, null);}
-<YYINITIAL> "(" {return tok{sym.LPAREN, null);}
-<YYINITIAL> ")" {return tok{sym.RPAREN, null);}
-<YYINITIAL> "{" {return tok{sym.LBRACE, null);}
-<YYINITIAL> "}" {return tok{sym.RBRACE, null);}
-<YYINITIAL> "[" {return tok{sym.LBRACK, null);}
-<YYINITIAL> "]" {return tok{sym.RBRACK, null);}
-<YYINITIAL> "." {return tok{sym.DOT, null);}
-<YYINITIAL> "&" {return tok{sym.AND, null);}
-<YYINITIAL> "|" {return tok{sym.OR, null);}
+<YYINITIAL> ":" {return tok(sym.COLON, null);}
+<YYINITIAL> "<>" {return tok(sym.NEQ, null);}
+<YYINITIAL> ">" {return tok(sym.GT, null);}
+<YYINITIAL> "<" {return tok(sym.LT, null);}
+<YYINITIAL> ">=" {return tok(sym.GE, null);}
+<YYINITIAL> "<=" {return tok(sym.LE, null);}
+<YYINITIAL> "=" {return tok(sym.EQ, null);}
+<YYINITIAL> ":=" {return tok(sym.ASSIGN, null);}
+<YYINITIAL> "/" {return tok(sym.DIVIDE, null);}
+<YYINITIAL> "-" {return tok(sym.MINUS, null);}
+<YYINITIAL> "*" {return tok(sym.TIMES, null);}
+<YYINITIAL> "+" {return tok(sym.PLUS, null);}
+<YYINITIAL> ";" {return tok(sym.SEMICOLON, null);}
+<YYINITIAL> "(" {return tok(sym.LPAREN, null);}
+<YYINITIAL> ")" {return tok(sym.RPAREN, null);}
+<YYINITIAL> "{" {return tok(sym.LBRACE, null);}
+<YYINITIAL> "}" {return tok(sym.RBRACE, null);}
+<YYINITIAL> "[" {return tok(sym.LBRACK, null);}
+<YYINITIAL> "]" {return tok(sym.RBRACK, null);}
+<YYINITIAL> "." {return tok(sym.DOT, null);}
+<YYINITIAL> "&" {return tok(sym.AND, null);}
+<YYINITIAL> "|" {return tok(sym.OR, null);}
 
-<YYINITIAL> "\"" {yybegin(STRING);}
-<STRING> [a-zA-Z0-9_\s] {string = string + yytext();}
-<STRING> "\n" { string += "\n"; }
-<STRING> "\t" { string += "\t"; }
+<YYINITIAL> \" {string = ""; yybegin(STRING);}
 
-<STRING> "\^c" {}
-/* if (ch >= '@'' && ch <= '_') ch = ch - '@'  Maybe this will help ^^^ */
+<STRING> \" {yybegin(YYINITIAL); return tok(sym.STRING, string);}
+<STRING> \\ {yybegin(IGNORE);}
+<STRING> . {string += yytext(); }
 
-<STRING> "\ddd" { string += "\\" + yytext(); }
-<STRING> "\\"" { string += "\""; }
-<STRING> "\\\" { string += "\\"; }
+<IGNORE> "^"[A-Za-z] {
+	StringBuffer s = new StringBuffer(yytext());
+	char ch = s.charAt(1);
+	int chInt = ch;
+	int a = 'a';
+	int z = 'z';
+	if(chInt >= a && chInt <= z) {
+		chInt -= 32;
+	}
+	int at = '@';
+	int u = '_';
+	if(chInt >= at && chInt <= u) {
+		chInt -= at;
+	}
+	ch = (char) chInt;
+	string += ch;
+	yybegin(STRING);
+}
+<IGNORE> n {string += "\n"; yybegin(STRING);}
+<IGNORE> t {string += "\t"; yybegin(STRING);}
+<IGNORE> [0-9][0-9][0-9] {
+	StringBuffer s = new StringBuffer(yytext());
+	String sub = "";
+	if (s.charAt(0) == '0' && s.charAt(1) == '0') {
+		sub = s.substring(2);
+	} else if (s.charAt(0) == '0') {
+		sub = s.substring(1);
+	} else {
+		sub = yytext();
+	}
+	int num = Integer.parseInt(sub);
+	char c = (char) num;	
+	string += c;
+	yybegin(STRING);
+}
+<IGNORE> [0-9]|[0-9][0-9] {
+	yybegin(STRING);
+	err("Illegal escape sequence: "+yytext());
+}
+<IGNORE> \" {string += "\""; yybegin(STRING);}
+<IGNORE> \\ { yybegin(STRING);}
+<IGNORE> [\f\s\n\t]+ {}
 
-<STRING> "\\" {yybegin(IGNORE);}
-<IGNORE> [\f|\s|\n|\t]+ {}
-<IGNORE> "\\" {yybegin(YYINTIAL);}
-
-<STRING> "\"" {return tok(sym.STRING, string);}
-
-. { err("Illegal character: " + yytext()); }
+. { err("Illegal fella: " + yytext()); }
