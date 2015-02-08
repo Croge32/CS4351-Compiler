@@ -19,7 +19,20 @@ source .profile
 ````
 Make and run the project using:
 ````bash
+Unix:
+
 make
+java Parse.Main test.tig
+
+Windows:
+
+rm -f */*.class Parse/Yylex.java (Equivalent to make clean)
+
+javac -g Parse/*.java
+cd Parse
+java JLex.Main Tiger.lex
+mv Tiger.lex.java Yylex.java
+cd ..
 java Parse.Main test.tig
 ````
 
